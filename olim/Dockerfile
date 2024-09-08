@@ -3,7 +3,7 @@ FROM python:3.9
 
 
 # Add the current directory files (on your machine) to the container
-ADD . .
+COPY . .
 
 # Install any needed packages specified in requirements.txt
 RUN pip install --upgrade pip
