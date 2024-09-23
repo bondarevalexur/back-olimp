@@ -6,3 +6,5 @@ djangorestframework-simplejwt
 PyJWT
 sqlparse
 gunicorn
+django-environ
+environ
