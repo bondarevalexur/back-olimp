@@ -8,3 +8,4 @@ sqlparse
 gunicorn
 django-environ
 environ
+psycopg2

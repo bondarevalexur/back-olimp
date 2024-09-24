@@ -42,7 +42,8 @@ class PageViewSet(viewsets.ModelViewSet):
     def get_permissions(self):
         if self.request.method in SAFE_METHODS:
             # Разрешение на просмотр только зарегестрированныем людям
-            return [IsAuthenticated()]
+            return [AllowAny()]
+            # return [IsAuthenticated()]
         return [IsAdminUser()]  # Разрешить запись только админу
 
     def get_serializer_class(self):
