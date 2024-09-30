@@ -19,7 +19,7 @@ AUTH_USER_MODEL = "olimApp.CustomUser"
 
 ALLOWED_HOSTS = ["*"]
 
-CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_ALL_ORIGINS = DEBUG
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -50,7 +50,7 @@ ROOT_URLCONF = "olim.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        'DIRS': [os.path.join(BASE_DIR, 'olimApp', 'mails')],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -70,11 +70,11 @@ WSGI_APPLICATION = "olim.wsgi.application"
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',  # или 'django.db.backends.mysql' для MySQL
+        'ENGINE': 'django.db.backends.postgresql',
         'NAME': env('DB_NAME'),
         'USER': env('DB_USER'),
         'PASSWORD': env('DB_PASSWORD'),
-        'HOST': env('DB_HOST'),
+        'HOST': "localhost" if DEBUG else env('DB_HOST'),
         'PORT': env('DB_PORT'),
     }
 }
@@ -142,7 +142,7 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=int(env('ACCESS_TOKEN_LIFETIME'))),
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=100) if DEBUG else timedelta(minutes=int(env('ACCESS_TOKEN_LIFETIME'))),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=int(env('REFRESH_TOKEN_LIFETIME'))),
     "ROTATE_REFRESH_TOKENS": False,
     "BLACKLIST_AFTER_ROTATION": True,
@@ -152,3 +152,11 @@ SIMPLE_JWT = {
     "AUTH_HEADER_TYPES": ("Bearer",),
 }
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = env("EMAIL_HOST")
+EMAIL_PORT = 587 if DEBUG else 465 # Или другой порт, используемый вашим SMTP сервером
+EMAIL_USE_TLS = False  # Использовать TLS (или False)
+EMAIL_USE_SSL = False if DEBUG else True  # Использовать SSL, если нужно (587 если True, установите EMAIL_PORT на 465)
+EMAIL_HOST_USER = env("EMAIL_HOST_USER")  # Ваш почтовый аккаунт
+EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")  # Ваш пароль
+DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL")  # Адрес отправителя по умолчанию

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Код активации</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        h1 {
+            color: #333333;
+        }
+        p {
+            font-size: 16px;
+            line-height: 1.5;
+            color: #555555;
+        }
+        .code {
+            display: inline-block;
+            background-color: #e6f7ff;
+            border: 1px solid #b3e0ff;
+            border-radius: 4px;
+            padding: 10px 15px;
+            font-size: 18px;
+            color: #007bff;
+            font-weight: bold;
+        }
+        .footer {
+            margin-top: 20px;
+            font-size: 12px;
+            color: #888888;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Код активации вашего аккаунта</h1>
+    <p>Здравствуйте! С вашей почты <b>{{ user.email }}<b/>, была совершена регестрация на сайте <a href="http://math-championship.ru">math-championship.ru</a></p>
+    <p>Спасибо за регистрацию. Пожалуйста, перейдите по ссылке, для активации</p>
+    <a class="code" href="http://math-championship.ru?{{ activation_code }}">{{ activation_code }}</a>
+    <p>Если вы не регистрировались, проигнорируйте это сообщение.</p>
+    <div class="footer">
+        <p>&copy; 2024 Ваша Компания. Все права защищены.</p>
+    </div>
+</div>
+</body>
+</html>
