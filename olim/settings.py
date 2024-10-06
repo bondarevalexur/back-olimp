@@ -74,7 +74,7 @@ DATABASES = {
         'NAME': env('DB_NAME'),
         'USER': env('DB_USER'),
         'PASSWORD': env('DB_PASSWORD'),
-        'HOST': "localhost" if DEBUG else env('DB_HOST'),
+        'HOST': env('DB_HOST'),
         'PORT': env('DB_PORT'),
     }
 }
