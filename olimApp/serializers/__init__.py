@@ -1,6 +1,8 @@
 from .page import PageReadSerializer, PageSerializer
 from .file import FileSerializer, FileReadSerializer
 from .user import CustomUserSerializer
+from .application import ApplicationSerializer
+
 
 __all__ = [
     'PageReadSerializer',
@@ -8,4 +10,5 @@ __all__ = [
     'FileSerializer',
     'FileReadSerializer',
     'CustomUserSerializer',
+    'ApplicationSerializer',
 ]

@@ -1,6 +1,6 @@
 
 # Окружение
-#### активировать окружение - source myenv/bin/activate
+#### активировать окружение - source back-olimp-env/bin/activate
 #### отключить окружение - deactivate
 
 # Django

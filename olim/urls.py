@@ -7,14 +7,12 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
 )
 
-from olimApp.views import FileViewSet, PageViewSet, CustomUserViewSet, UserProfileView, ActivateProfileView
-
+from olimApp.views import FileViewSet, ApplicationView, PageViewSet, CustomUserViewSet, UserProfileView, \
+    ActivateUserProfileView
 
 router = DefaultRouter()
 router.register(r"pages", PageViewSet)
 router.register(r"files", FileViewSet)
-
-
 
 urlpatterns = [
     path("api/", include(router.urls)),
@@ -23,8 +21,10 @@ urlpatterns = [
     path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
 
     path('api/users/', CustomUserViewSet.as_view(), name='users'),
-    path('api/activate', ActivateProfileView.as_view(), name='activate_profile'),
-    path("api/profile/", UserProfileView.as_view(), name="user_profile"),
+    path('api/users/activate/', ActivateUserProfileView.as_view(), name='activate_profile'),
+    path("api/users/show/", UserProfileView.as_view(), name="user_profile"),
+
+    path("api/applications/", ApplicationView.as_view(), name="application"),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

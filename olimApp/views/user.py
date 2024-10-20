@@ -70,7 +70,7 @@ class CustomUserViewSet(APIView):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def put(self, request):
+    def patch(self, request):
         """
         Изменение пароля пользователя.
 
@@ -95,7 +95,6 @@ class CustomUserViewSet(APIView):
         return Response({"message": "Пароль успешно изменен"}, status=status.HTTP_200_OK)
 
     def send_activation_email(self, user):
-        print(env('DEFAULT_FROM_EMAIL'),user)
         """
         Отправка электронного письма для активации аккаунта.
 
@@ -108,11 +107,10 @@ class CustomUserViewSet(APIView):
         subject = 'Активация аккаунта'
         from_email = "admin@math-championship.ru"
         to = user.email
-        print(to)
         send_mail(subject, plain_message, from_email, [to], html_message=html_message)
 
 
-class ActivateProfileView(APIView):
+class ActivateUserProfileView(APIView):
     """
     View для активации профиля пользователя по коду активации.
     """
