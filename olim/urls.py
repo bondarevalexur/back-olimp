@@ -8,7 +8,7 @@ from rest_framework_simplejwt.views import (
 )
 
 from olimApp.views import FileViewSet, ApplicationView, PageViewSet, CustomUserViewSet, UserProfileView, \
-    ActivateUserProfileView
+    ActivateUserProfileView, ResetPasswordView
 
 router = DefaultRouter()
 router.register(r"pages", PageViewSet)
@@ -22,6 +22,7 @@ urlpatterns = [
 
     path('api/users/', CustomUserViewSet.as_view(), name='users'),
     path('api/users/activate/', ActivateUserProfileView.as_view(), name='activate_profile'),
+    path('api/users/reset_password/', ResetPasswordView.as_view(), name='reset_password'),
     path("api/users/show/", UserProfileView.as_view(), name="user_profile"),
 
     path("api/applications/", ApplicationView.as_view(), name="application"),

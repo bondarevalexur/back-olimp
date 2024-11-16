@@ -14,6 +14,9 @@ from rest_framework import status
 from pathlib import Path
 import environ
 import os
+from django.contrib.auth.hashers import make_password
+import random
+import string
 
 from ..models import CustomUser
 from ..serializers import (
@@ -70,30 +73,6 @@ class CustomUserViewSet(APIView):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def patch(self, request):
-        """
-        Изменение пароля пользователя.
-
-        Параметры запроса:
-            - last_password: str - текущий пароль
-            - new_password: str - новый пароль
-
-        Возвращает:
-            - сообщение об успешном изменении пароля
-            - ошибку, если текущий пароль неверный
-        """
-        user = request.user
-        last_password = request.data["last_password"]
-        new_password = request.data["new_password"]
-
-        if not user.check_password(last_password):
-            return Response({"message": "Неверный пароль "}, status=status.HTTP_400_BAD_REQUEST)
-
-        user.set_password(new_password)
-        user.save()
-
-        return Response({"message": "Пароль успешно изменен"}, status=status.HTTP_200_OK)
-
     def send_activation_email(self, user):
         """
         Отправка электронного письма для активации аккаунта.
@@ -141,6 +120,85 @@ class ActivateUserProfileView(APIView):
         user.save()
 
         return Response({"message": "Аккаунт успешно активирован!"}, status=status.HTTP_200_OK)
+
+
+
+class ResetPasswordView(APIView):
+    """
+    Представление для сброса пароля пользователя и задания временного пароля.
+    """
+    authentication_classes = [JWTAuthentication]
+
+    def patch(self, request):
+        """
+        Изменение пароля пользователя.
+
+        Параметры запроса:
+            - last_password: str - текущий пароль
+            - new_password: str - новый пароль
+
+        Возвращает:
+            - сообщение об успешном изменении пароля
+            - ошибку, если текущий пароль неверный
+        """
+        user = request.user
+        last_password = request.data["last_password"]
+        new_password = request.data["new_password"]
+
+        if not user.check_password(last_password):
+            return Response({"message": "Неверный пароль "}, status=status.HTTP_400_BAD_REQUEST)
+
+        user.set_password(new_password)
+        user.save()
+
+        return Response({"message": "Пароль успешно изменен"}, status=status.HTTP_200_OK)
+
+    def post(self, request, *args, **kwargs):
+        """
+        Сбрасывает пароль пользователя, генерируя временный пароль, и отправляет его на почту.
+        """
+        email = request.data.get("email")
+
+        if not email:
+            return Response({"error": "Необходимо указать email."}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            user = CustomUser.objects.get(email=email)
+        except CustomUser.DoesNotExist:
+            return Response({"error": "Пользователь с указанным email не найден."}, status=status.HTTP_404_NOT_FOUND)
+
+        # Генерация временного пароля
+        temporary_password = self.generate_temporary_password()
+
+        # Обновление пароля пользователя
+        user.password = make_password(temporary_password)
+        user.save()
+
+        # Отправка временного пароля на почту
+        self.send_temporary_password_email(email, temporary_password)
+
+        return Response(
+            {"message": "Временный пароль отправлен на вашу почту."},
+            status=status.HTTP_200_OK
+        )
+
+    def generate_temporary_password(self, length=8):
+        """
+        Генерирует временный пароль из случайных букв и цифр.
+        """
+        characters = string.ascii_letters + string.digits
+        return ''.join(random.choice(characters) for _ in range(length))
+
+    def send_temporary_password_email(self, email, temporary_password):
+        """
+        Отправляет временный пароль на указанный email.
+        """
+        subject = "Сброс пароля"
+        html_message = render_to_string('reset_password_mail.html', {'email': email, 'temporary_password': temporary_password})
+        plain_message = strip_tags(html_message)
+        from_email = "admin@math-championship.ru"
+
+        send_mail(subject, plain_message, from_email, [email], html_message=html_message)
 
 
 class UserProfileView(APIView):
